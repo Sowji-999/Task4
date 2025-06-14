@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enhanced Portfolio + To-Do + Products</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #6366f1;
+      --accent: #10b981;
+      --light: #f9fafb;
+      --dark: #1f2937;
+      --white: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--light);
+      color: var(--dark);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+    body.dark {
+      background: #1e293b;
+      color: #f1f5f9;
+    }
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--primary);
+      color: var(--white);
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+    nav a {
+      color: var(--white);
+      margin: 0 0.75rem;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover { text-decoration: underline; }
+    h2 {
+      color: var(--primary);
+      border-bottom: 2px solid var(--accent);
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .grid { display: grid; gap: 1.5rem; }
+    .projects, .products { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+    .card {
+      background: var(--white);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    }
+    .card img {
+      width: 100%; height: 180px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .profile-img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--primary);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  transition: transform 0.6s ease-in-out;
+}
+.profile-img:hover {
+  transform: rotate(360deg);
+}
+    .remove-btn {
+      background: transparent;
+      border: none;
+      color: #dc2626;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    textarea { min-height: 80px; }
+    button {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #0f9e6d; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 0.5rem 0; display: flex; justify-content: space-between; align-items: center; }
+    body.dark nav, body.dark .card { background: #334155; color: #f1f5f9; }
+    body.dark button, body.dark .remove-btn { background-color: #475569; color: #f1f5f9; }
+    @media (max-width: 600px) {
+      nav { flex-direction: column; align-items: flex-start; }
+    }
+    label {
+    font-weight: 600;
+    display: block;
+    margin-top: 1rem;
+  }
+  </style>
+</head>
+<body>
+  <nav>
+    <div style="font-size: 1.25rem; font-weight: bold;">🌟 My Portfolio</div>
+    <div>
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <button onclick="toggleDarkMode()" id="darkToggle" title="Toggle Dark Mode" style="background: none; border: none; color: white; font-size: 1.2rem;">
+        <i class="fas fa-moon"></i>
+      </button>
+    </div>
+  </nav>
+<section id="about" style="text-align: center; padding: 2rem;">
+  <a href="Hi.jpg" target="_blank">
+    <img src="Hi.jpg" alt="Profile Photo" class="profile-img">
+  </a>
+  <h2>About Me</h2>
+  <p>Hello! I'm a web developer passionate about building modern, responsive, and interactive web applications using HTML, CSS, and JavaScript.</p>
+</section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="grid projects">
+      <div class="card">
+        <h3>Note App</h3>
+        <textarea id="noteInput" placeholder="Write a note..."></textarea>
+        <button onclick="saveNote()"><i class="fas fa-plus"></i> Add Note</button>
+        <ul id="notesList"></ul>
+        <button onclick="clearNotes()">Clear All Notes</button>
+      </div>
+      <div class="card">
+        <h3>To-Do List</h3>
+        <input type="text" id="taskInput" placeholder="Enter task" />
+        <button onclick="addTask()"><i class="fas fa-plus"></i> Add Task</button>
+        <ul id="taskList"></ul>
+        <button onclick="clearTasks()">Clear All Tasks</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="products">
+    <h2>Product Page</h2>
+    <label>Category:
+      <select id="categoryFilter" onchange="filterProducts()">
+        <option value="all">All</option>
+        <option value="electronics">Electronics</option>
+        <option value="books">Books</option>
+      </select>
+    </label>
+    <label>Sort by:
+      <select id="sortOption" onchange="sortProducts()">
+        <option value="rating">Rating</option>
+        <option value="price">Price</option>
+      </select>
+    </label>
+    <div class="grid products" id="productList"></div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <form>
+      <input type="text" placeholder="Your Name" required />
+      <input type="email" placeholder="Your Email" required />
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const icon = document.getElementById("darkToggle").querySelector("i");
+      icon.classList.toggle("fa-moon");
+      icon.classList.toggle("fa-sun");
+    }
+
+    function saveNote() {
+      const note = document.getElementById('noteInput').value;
+      if (!note) return;
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      notes.push(note);
+      localStorage.setItem('notes', JSON.stringify(notes));
+      document.getElementById('noteInput').value = '';
+      renderNotes();
+    }
+    function renderNotes() {
+      const notes = JSON.parse(localStorage.getItem('notes') || '[]');
+      const list = document.getElementById('notesList');
+      list.innerHTML = notes.map((n, i) => `
+        <li>${n}<button class="remove-btn" onclick="confirmDeleteNote(${i})"><i class="fas fa-trash"></i></button></li>
+      `).join('');
+    }
+    function confirmDeleteNote(index) {
+      if (confirm("Delete this note?")) removeNote(index);
+    }
+    function removeNote(index) {
+      const notes = JSON.parse(localStorage.getItem('notes'));
+      notes.splice(index, 1);
+      localStorage.setItem('notes', JSON.stringify(notes));
+      renderNotes();
+    }
+    function clearNotes() {
+      if (confirm("Clear all notes?")) {
+        localStorage.removeItem('notes');
+        renderNotes();
+      }
+    }
+    renderNotes();
+
+    function addTask() {
+      const task = document.getElementById('taskInput').value;
+      if (!task) return;
+      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+      tasks.push(task);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      document.getElementById('taskInput').value = '';
+      renderTasks();
+    }
+    function renderTasks() {
+      const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+      const list = document.getElementById('taskList');
+      list.innerHTML = tasks.map((t, i) => `
+        <li>${t}<button class="remove-btn" onclick="confirmDeleteTask(${i})"><i class="fas fa-trash"></i></button></li>
+      `).join('');
+    }
+    function confirmDeleteTask(index) {
+      if (confirm("Delete this task?")) removeTask(index);
+    }
+    function removeTask(index) {
+      const tasks = JSON.parse(localStorage.getItem('tasks'));
+      tasks.splice(index, 1);
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+      renderTasks();
+    }
+    function clearTasks() {
+      if (confirm("Clear all tasks?")) {
+        localStorage.removeItem('tasks');
+        renderTasks();
+      }
+    }
+    renderTasks();
+const products = [
+  {
+    name: 'Smartphone',
+    category: 'electronics',
+    price: 500,
+    rating: 4.5,
+    img: 'https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-LxbDZUY1gzuzF4AEv0OHAqsSGpAng8.png&w=256&q=75'
+  },
+  {
+    name: 'Laptop',
+    category: 'electronics',
+    price: 900,
+    rating: 4.7,
+    img: 'https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-UsyTZyMk2er8VfZu1T68Z4BbnfHYL1.png&w=256&q=75'
+  },
+  {
+    name: 'JS Guide Book',
+    category: 'books',
+    price: 30,
+    rating: 4.9,
+    img: 'https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-PBF0FeYZPH4cDOId8eP4Rb1N9kvBIY.png&w=160&q=75'
+  },
+  {
+    name: 'Headphones',
+    category: 'electronics',
+    price: 100,
+    rating: 4.2,
+    img: 'https://www.thiings.co/_next/image?url=https%3A%2F%2Flftz25oez4aqbxpq.public.blob.vercel-storage.com%2Fimage-xaFT1FlszEsDcOmAn7aePOhEQFXIN3.png&w=160&q=75'
+  }
+];
+
+    function displayProducts(items) {
+      const list = document.getElementById('productList');
+      list.innerHTML = items.map(p => `
+        <div class="card">
+          <img src="${p.img}" alt="${p.name}" />
+          <h4>${p.name}</h4>
+          <p><strong>Category:</strong> ${p.category}</p>
+          <p><strong>Price:</strong> $${p.price}</p>
+          <p><strong>Rating:</strong> ${p.rating}</p>
+        </div>
+      `).join('');
+    }
+
+    function filterProducts() {
+      const category = document.getElementById('categoryFilter').value;
+      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+      displayProducts(filtered);
+    }
+
+    function sortProducts() {
+      const option = document.getElementById('sortOption').value;
+      let sorted = [...products];
+      if (option === 'rating') sorted.sort((a, b) => b.rating - a.rating);
+      else sorted.sort((a, b) => a.price - b.price);
+      displayProducts(sorted);
+    }
+
+    displayProducts(products);
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
